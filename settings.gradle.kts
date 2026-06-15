@@ -1,14 +1,20 @@
 pluginManagement {
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
+        google()
+        mavenCentral()
+        // JetBrains Kotlin dev/eap repositories may host KSP Gradle plugin artifacts for Kotlin 2.x
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/eap")
+        // Gradle Plugin Portal kept for plugin resolution
+        gradlePluginPortal()
+    }
+    // Map KSP plugin id to Maven module coordinates (some KSP releases are published to Maven Central)
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "com.google.devtools.ksp") {
+                useModule("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:${requested.version}")
             }
         }
-        mavenCentral()
-        gradlePluginPortal()
     }
 }
 plugins {
@@ -19,6 +25,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Also include Kotlin dev/eap repos for Kotlin 2.1.x / KSP artifacts
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/eap")
     }
 }
 
